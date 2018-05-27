@@ -60,7 +60,7 @@ class checkGarageDoor extends Command
                 return;
             }
 
-            if ((int) $clientData->last_status !== (int) $value) {
+            if (empty($clientData) || ((int) $clientData->last_status !== (int) $value)) {
 
                 // New status
                 if ($value === false) {
