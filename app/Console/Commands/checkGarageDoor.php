@@ -69,7 +69,12 @@ class checkGarageDoor extends Command
                     Log::info($clientID, 'open', 'Garage deur is open');
                 }
 
-                ClientData::where('client_id', $clientID)->update(['data' => json_encode(['last_status' => (int) $value])]);
+                if (!empty($clientData)) {
+                    ClientData::where('client_id', $clientID)->update(['data' => json_encode(['last_status' => (int) $value])]);
+                } else {
+                    ClientData::insert(['client_id' => $clientID, 'data' => json_encode(['last_status' => (int) $value])]);
+                }
+
             }
 
             sleep(1);
