@@ -2,7 +2,8 @@
 
 namespace App\Console;
 
-use App\Console\Commands\checkGarageDoor;
+use App\Console\Commands\NotifyServer;
+use App\Console\Commands\RunTasks;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -14,7 +15,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        CheckGarageDoor::class
+        NotifyServer::class,
+        RunTasks::class
     ];
 
     /**
@@ -25,9 +27,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-         $schedule->command('client:checkGarageDoor')
+        $schedule->command('client:run')
                   ->everyMinute()
                   ->withoutOverlapping();
+
     }
 
     /**

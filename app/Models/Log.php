@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Repositories\ClientRepository;
 use Illuminate\Database\Eloquent\Model;
 
 class Log extends Model
@@ -37,9 +38,15 @@ class Log extends Model
 
     }
 
-    private static function add($sType, $sSystem, $sEvent, $sMessage) {
+    private static function add($sType, $sSystem, $sEvent, $sMessage)
+    {
+        /** @var ClientRepository $clientRepository */
+        $clientRepository = app()->make(ClientRepository::class);
+        $client = $clientRepository->getClient();
 
         $oLog = new Log();
+
+        $oLog->source = 'client:'.$client->id;
         $oLog->system = $sSystem;
         $oLog->event = $sEvent;
         $oLog->message = $sMessage;
