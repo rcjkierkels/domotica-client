@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Async\TaskManager;
 use App\Models\Log;
 use App\Models\Task;
 use App\Repositories\TaskRepository;
@@ -48,7 +49,13 @@ class RunTasks extends Command
      */
     public function handle()
     {
-        $pool = Pool::create();
+        $this->cleanUpDeadTasks();
+
+        $pool = Pool::create()
+            // The maximum amount of processes which can run simultaneously.
+            ->concurrency(20)
+            // The maximum amount of time a process may take to finish in seconds.
+            ->timeout(60);
 
         while(self::FOREVER)
         {
@@ -58,24 +65,25 @@ class RunTasks extends Command
             /** @var Task $task */
             foreach($tasks as $task)
             {
-                $taskClass = 'App\Tasks\\'.$task->name;
-
-                if (!class_exists($taskClass)) {
-                    Log::error('Tasks', 'Run', 'Cannot run unknown task: '.$task->name);
-                    $this->cleanupTask($task);
-                    continue;
-                }
-
                 $this->taskRepository->setRunning($task);
 
-                $pool->add(new $taskClass($task))
+                $pool->add(new TaskManager($task))
                      ->then(function($output) use ($task) { $this->finishTask($task, $output); })
                      ->catch(function(Throwable $exception) use ($task) { $this->errorTask($task, $exception); });
-
 
             }
 
             sleep(1);
+        }
+    }
+
+    protected function cleanUpDeadTasks()
+    {
+        $deadTasks = $this->taskRepository->getRunningTasks();
+        foreach ($deadTasks as $task)
+        {
+            Log::error('Tasks', 'Execute', 'Task '.$task->name.' has been killed because it was no longer really running');
+            $this->cleanupTask($task);
         }
     }
 
@@ -93,7 +101,7 @@ class RunTasks extends Command
 
     protected function errorTask(Task $task, Throwable $exception)
     {
-        Log::error('Tasks', 'Execute', $exception->getMessage());
+        Log::error('Tasks', 'Execute', $exception->getMessage(), $exception);
         $this->cleanupTask($task);
     }
 

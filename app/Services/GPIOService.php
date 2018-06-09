@@ -15,8 +15,9 @@ class GPIOService
 
 
     public function __construct() {
-        $this->GPIO_WRITE = "python '".base_path('bin/gpio/write')."' ";
-        $this->GPIO_READ = "python '".base_path('bin/gpio/read')."' ";
+
+        $this->GPIO_WRITE = "python '".__DIR__.('/../../bin/gpio/write')."' ";
+        $this->GPIO_READ = "python '".__DIR__.('/../../bin/gpio/read')."' ";
     }
 
     /**
@@ -28,7 +29,11 @@ class GPIOService
         $aResponse = [];
         $iErrorCode = null;
 
-        $mOutput = exec($this->GPIO_READ . $iPin, $aResponse, $iErrorCode);
+        if (config('app.debug')) {
+            $mOutput = (int) file_get_contents(base_path('debug/gpio'));
+        } else {
+            $mOutput = exec($this->GPIO_READ . $iPin, $aResponse, $iErrorCode);
+        }
 
         if ($iErrorCode) {
             Log::error('GPIOService', 'read', "Cannot read from pin {$iPin}");

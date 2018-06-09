@@ -32,10 +32,13 @@ class Log extends Model
 
     }
 
-    public static function error($sSystem, $sEvent, $sMessage) {
+    public static function error($sSystem, $sEvent, $sMessage, \Exception $oException = null) {
+
+        if (!empty($oException)) {
+            //$sMessage += '\n\nFile:'.$oException->getFile().'\nLine:'.$oException->getLine();
+        }
 
         self::add(self::TYPE_ERROR, $sSystem, $sEvent, $sMessage);
-
     }
 
     private static function add($sType, $sSystem, $sEvent, $sMessage)

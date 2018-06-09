@@ -26,6 +26,14 @@ class TaskRepository
             ->get();
     }
 
+    public function getRunningTasks() : Collection
+    {
+        return Task::where('client_id', $this->client->id)
+            ->where('running', 1)
+            ->orderBy('created_at', 'asc')
+            ->get();
+    }
+
     public function getTasks() : Collection
     {
         return Task::where('client_id', $this->client->id)
@@ -42,6 +50,11 @@ class TaskRepository
     {
         $task->running = $isRunning;
         $task->save();
+    }
+
+    public function getTaskById(int $id)
+    {
+        return Task::find($id);
     }
 
 

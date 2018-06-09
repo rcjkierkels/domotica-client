@@ -12,7 +12,7 @@ class NotifyServer extends Command
      *
      * @var string
      */
-    protected $signature = 'server:notify';
+    protected $signature = 'client:notify';
 
     /**
      * The console command description.
