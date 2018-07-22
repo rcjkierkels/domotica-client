@@ -45,28 +45,16 @@ class ClientRepository
     }
 
     /**
-     * Source: https://www.codeproject.com/Questions/991416/How-Do-I-Get-Mac-Address-Of-Client-Using-Php
+     * Source: https://stackoverflow.com/questions/23828413/get-mac-address-using-shell-script
      * @return string
      */
     protected function getMacLinux() {
-        exec('netstat -ie', $result);
-        if(is_array($result)) {
-            $iface = array();
-            foreach($result as $key => $line) {
-                if($key > 0) {
-                    $tmp = str_replace(" ", "", substr($line, 0, 10));
-                    if($tmp <> "") {
-                        $macpos = strpos($line, "HWaddr");
-                        if($macpos !== false) {
-                            $iface[] = array('iface' => $tmp, 'mac' => strtolower(substr($line, $macpos+7, 17)));
-                        }
-                    }
-                }
-            }
-            return $iface[0]['mac'];
-        } else {
-            return "notfound";
+        exec("cat /sys/class/net/$(ip route show default | awk '/default/ {print $5}')/address", $result);
+        if (!empty($result)) {
+            return current($result);
         }
+
+        return 'unknown';
     }
 
 }
