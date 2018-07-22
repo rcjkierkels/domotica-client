@@ -13,7 +13,7 @@ class ClientRepository
         $macAddress = $this->getMacLinux();
 
         $data = [
-            'ip_address' => gethostbyname(gethostname()),
+            'ip_address' => $this->getIpAddress(),
             'hostname' => gethostname(),
             'name' => config('client.name'),
             'location' => config('client.location'),
@@ -42,6 +42,19 @@ class ClientRepository
         }
 
         return $client;
+    }
+
+    protected function getIpAddress() {
+
+        $networkInterface = "ip route show default | awk '/default/ {print $5}'";
+        $getIpAddress = 'ifconfig '."$($networkInterface)".'| sed -En \'s/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p\'';
+        exec($getIpAddress, $result);
+
+        if (!empty($result)) {
+            return current($result);
+        }
+
+        return gethostbyname(gethostname());
     }
 
     /**
