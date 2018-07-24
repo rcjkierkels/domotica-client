@@ -40,5 +40,7 @@ class UpdateClient extends Command
         exec('bash '.app_path('../bin/git/status'), $result);
 
         exec('git pull origin master');
+
+        die(var_dump($result));
     }
 }
