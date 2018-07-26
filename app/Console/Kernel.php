@@ -4,6 +4,7 @@ namespace App\Console;
 
 use App\Console\Commands\NotifyServer;
 use App\Console\Commands\RunTasks;
+use App\Console\Commands\UpdateClient;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -16,7 +17,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         NotifyServer::class,
-        RunTasks::class
+        RunTasks::class,
+        UpdateClient::class
     ];
 
     /**
@@ -27,7 +29,18 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        /**
+         * Run task watcher. This is a continues task and should only be stopped by an update
+         */
         $schedule->command('client:run')
+                  ->everyMinute()
+                  ->withoutOverlapping();
+
+        /**
+         * Check for updates. If something got pushed to master branch
+         * Then update local repository and run composer install
+         */
+        $schedule->command('client:update')
                   ->everyMinute()
                   ->withoutOverlapping();
 

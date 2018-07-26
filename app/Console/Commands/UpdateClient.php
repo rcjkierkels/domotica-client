@@ -81,11 +81,11 @@ class UpdateClient extends Command
 
         $commitHash = current($commitHash);
 
+        exec('composer install');
+
         $this->clientRepository->insertOrUpdateClient([
             'last_commit' => $commitHash,
             'last_update_code' => date('Y-m-d H:i:s')
         ]);
-
-        exec('composer install');
     }
 }

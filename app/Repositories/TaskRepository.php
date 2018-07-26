@@ -46,6 +46,11 @@ class TaskRepository
         $task->delete();
     }
 
+    public function reset(Task $task)
+    {
+        $this->setRunning($task, false);
+    }
+
     public function setRunning(Task $task, bool $isRunning = true)
     {
         $task->running = $isRunning;

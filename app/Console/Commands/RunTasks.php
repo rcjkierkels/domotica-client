@@ -28,16 +28,22 @@ class RunTasks extends Command
      */
     protected $description = 'Start running client';
 
+    /** @var TaskRepository $taskRepository */
     protected $taskRepository;
+    /** @var ClientRepository $clientRepository */
+    protected $clientRepository;
+
+    protected $lastUpdateCode;
 
     /**
      * Create a new command instance.
      *
      * @return void
      */
-    public function __construct(TaskRepository $taskRepository)
+    public function __construct(TaskRepository $taskRepository, ClientRepository $clientRepository)
     {
         $this->taskRepository = $taskRepository;
+        $this->clientRepository = $clientRepository;
 
         parent::__construct();
     }
@@ -49,7 +55,7 @@ class RunTasks extends Command
      */
     public function handle()
     {
-        $this->cleanUpDeadTasks();
+        $this->resetDeadTasks();
 
         $pool = Pool::create()
             // The maximum amount of processes which can run simultaneously.
@@ -57,9 +63,12 @@ class RunTasks extends Command
             // The maximum amount of time a process may take to finish in seconds.
             ->timeout(60);
 
-        while(self::FOREVER)
-        {
+        $this->lastUpdateCode = $this->clientRepository->getClient()->last_update_code;
 
+        Log::info('Tasks', 'Watch', 'Client is running. Client is now watching for tasks');
+
+        while( $this->clientCodeHasNotBeenUpdated() )
+        {
             $tasks = $this->taskRepository->getQueuedTasks();
 
             /** @var Task $task */
@@ -75,15 +84,29 @@ class RunTasks extends Command
 
             sleep(1);
         }
+
+        Log::info('Tasks', 'Watch', 'Client stopped running and is no longer watching tasks because of a code update');
     }
 
-    protected function cleanUpDeadTasks()
+    protected function clientCodeHasNotBeenUpdated() : bool
+    {
+        $currentLastUpdateCode = $this->clientRepository->getClient()->last_update_code;
+
+        if ($currentLastUpdateCode !== $this->lastUpdateCode) {
+            $this->lastUpdateCode = $currentLastUpdateCode;
+            return false;
+        }
+
+        return true;
+    }
+
+    protected function resetDeadTasks()
     {
         $deadTasks = $this->taskRepository->getRunningTasks();
         foreach ($deadTasks as $task)
         {
-            Log::error('Tasks', 'Execute', 'Task '.$task->name.' has been killed because it was no longer really running');
-            $this->cleanupTask($task);
+            Log::error('Tasks', 'Execute', 'Task '.$task->name.' was no longer running and is resetted');
+            $this->resetTask($task);
         }
     }
 
@@ -108,5 +131,10 @@ class RunTasks extends Command
     protected function cleanupTask(Task $task)
     {
         $this->taskRepository->cleanUp($task);
+    }
+
+    protected function resetTask(Task $task)
+    {
+        $this->taskRepository->reset($task);
     }
 }
