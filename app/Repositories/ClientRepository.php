@@ -8,7 +8,7 @@ use Carbon\Carbon;
 class ClientRepository
 {
 
-    public function insertOrUpdateClient()
+    public function insertOrUpdateClient(array $extraData = [])
     {
         $macAddress = $this->getMacLinux();
 
@@ -19,6 +19,8 @@ class ClientRepository
             'location' => config('client.location'),
             'updated_at' => Carbon::now()
         ];
+
+        $data = array_merge($data, $extraData);
 
         $client = Client::where('physical_address', $macAddress)->first();
 
