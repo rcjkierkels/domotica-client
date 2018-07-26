@@ -86,6 +86,6 @@ class UpdateClient extends Command
             'last_update_code' => date('Y-m-d H:i:s')
         ]);
 
-        exec('composer install');
+        exec('composer install');// test comment
     }
 }
