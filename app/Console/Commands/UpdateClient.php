@@ -50,7 +50,8 @@ class UpdateClient extends Command
         }
 
         $this->clientRepository->insertOrUpdateClient([
-            'last_update_check' => date('Y-m-d H:i:s')
+            'last_update_check' => date('Y-m-d H:i:s'),
+            'last_commit' => $this->getCurrentCommit(),
         ]);
 
         switch($result[1])
@@ -73,18 +74,20 @@ class UpdateClient extends Command
 
     }
 
+    protected function getCurrentCommit() : string
+    {
+        exec('cat .git/refs/heads/master', $commitHash);
+        return current($commitHash);
+    }
+
     protected function update()
     {
         exec('git pull origin master');
 
-        exec('cat .git/refs/heads/master', $commitHash);
-
-        $commitHash = current($commitHash);
-
         exec('composer install');
 
         $this->clientRepository->insertOrUpdateClient([
-            'last_commit' => $commitHash,
+            'last_commit' => $this->getCurrentCommit(),
             'last_update_code' => date('Y-m-d H:i:s')
         ]);
     }
