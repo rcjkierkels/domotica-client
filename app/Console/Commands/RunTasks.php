@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Async\TaskManager;
 use App\Models\Log;
 use App\Models\Task;
+use App\Repositories\ClientRepository;
 use App\Repositories\TaskRepository;
 use Illuminate\Console\Command;
 use Spatie\Async\Pool;
