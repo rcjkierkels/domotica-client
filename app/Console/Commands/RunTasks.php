@@ -84,6 +84,8 @@ class RunTasks extends Command
             }
 
             sleep(1);
+
+            $this->clientRepository->insertOrUpdateClient(['last_task_check' => date('Y-m-d H:i:s')]);
         }
 
         Log::info('Tasks', 'Watch', 'Client stopped running and is no longer watching tasks because of a code update');
