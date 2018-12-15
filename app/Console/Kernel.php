@@ -36,13 +36,6 @@ class Kernel extends ConsoleKernel
                   ->everyMinute()
                   ->withoutOverlapping();
 
-        /**
-         * Check for updates. If something got pushed to master branch
-         * Then update local repository and run composer install
-         */
-        $schedule->command('client:update')
-                  ->everyMinute()
-                  ->withoutOverlapping();
 
     }
 

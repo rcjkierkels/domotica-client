@@ -50,11 +50,10 @@ class ExecuteTask extends Command
      */
     public function handle()
     {
-        $task = $this->taskRepository->getTaskById($this->argument('task_id'));
-
-        $workerClassName = 'App\Workers\\'.$task->name.'Worker';
-
         try {
+
+            $task = $this->taskRepository->getTaskById($this->argument('task_id'));
+            $workerClassName = 'App\Workers\\'.$task->name.'Worker';
 
             /** @var BaseWorker $workerClass */
             $workerClass = new $workerClassName($task);
