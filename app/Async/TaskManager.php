@@ -41,7 +41,9 @@ class TaskManager extends Task
         $this->backoff
             ->setStrategy(new ExponentialStrategy(self::BACKOFF_BASETIME))
             ->enableJitter()
-            ->setErrorHandler($this->errorHandler)
+            ->setErrorHandler(function($exception, $attempt, $maxAttempts) {
+                $this->errorHandler($exception, $attempt, $maxAttempts);
+            })
             ->run(function() use ($output, $returnVar) {
 
                 exec('php '.__DIR__.'/../../artisan client:execute '.$this->task->id, $output, $returnVar);
