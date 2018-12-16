@@ -15,11 +15,11 @@ class TaskManager extends Task
     protected const BACKOFF_MAX_RETRY_ATTEMPTS = 5;
     protected const BACKOFF_BASETIME = 1500; // msec
 
-    public function __construct(\App\Models\Task $task, Backoff $backoff)
+    public function __construct(\App\Models\Task $task)
     {
         $this->task = $task;
-        $this->backoff = $backoff;
 
+        $this->backoff = app()->make(Backoff::class);
         $this->backoff->setMaxAttempts(self::BACKOFF_MAX_RETRY_ATTEMPTS);
     }
 
