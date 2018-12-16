@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5184e292d9bca923fd508ac949e7f7a7",
+    "content-hash": "dd78b97a36c2a3c7bae3a193f693b482",
     "packages": [
         {
             "name": "defuse/php-encryption",
@@ -2053,6 +2053,45 @@
                 "spatie"
             ],
             "time": "2018-01-29T15:09:29+00:00"
+        },
+        {
+            "name": "stechstudio/backoff",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/stechstudio/backoff.git",
+                "reference": "88b9a4a5da1cc5485e6fb0c5d35ee0d4149c3361"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/stechstudio/backoff/zipball/88b9a4a5da1cc5485e6fb0c5d35ee0d4149c3361",
+                "reference": "88b9a4a5da1cc5485e6fb0c5d35ee0d4149c3361",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "5.5.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "STS\\Backoff\\": "src"
+                },
+                "files": [
+                    "src/helpers.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Joseph Szobody",
+                    "email": "joseph@stechstudio.com"
+                }
+            ],
+            "description": "PHP library providing retry functionality with multiple backoff strategies and jitter support",
+            "time": "2018-07-18T16:59:44+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",

@@ -3,6 +3,7 @@
 namespace App\Async;
 
 use App\Models\Log;
+use Illuminate\Support\Facades\App;
 use Spatie\Async\Task;
 use STS\Backoff\Backoff;
 use STS\Backoff\Strategies\ExponentialStrategy;
@@ -19,7 +20,7 @@ class TaskManager extends Task
     {
         $this->task = $task;
 
-        $this->backoff = app()->make(Backoff::class);
+        $this->backoff = App::make(Backoff::class);
         $this->backoff->setMaxAttempts(self::BACKOFF_MAX_RETRY_ATTEMPTS);
     }
 
