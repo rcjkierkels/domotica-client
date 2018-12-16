@@ -7,6 +7,7 @@ use App\Models\Log;
 use App\Models\Task;
 use App\Repositories\ClientRepository;
 use App\Repositories\TaskRepository;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Spatie\Async\Pool;
 use Throwable;
@@ -54,7 +55,7 @@ class RunTasks extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle() : void
     {
         $this->resetDeadTasks();
 
@@ -103,7 +104,7 @@ class RunTasks extends Command
         return true;
     }
 
-    protected function resetDeadTasks()
+    protected function resetDeadTasks() : void
     {
         $deadTasks = $this->taskRepository->getRunningTasks();
         foreach ($deadTasks as $task)
@@ -113,7 +114,7 @@ class RunTasks extends Command
         }
     }
 
-    protected function finishTask(Task $task, $output)
+    protected function finishTask(Task $task, $output) : void
     {
         if ($task->keep) {
             usleep($task->interval * 1000);
@@ -125,18 +126,18 @@ class RunTasks extends Command
         $this->cleanupTask($task);
     }
 
-    protected function errorTask(Task $task, Throwable $exception)
+    protected function errorTask(Task $task, Throwable $exception) : void
     {
         Log::error('Tasks', 'Execute', $exception->getMessage(), $exception);
         $this->cleanupTask($task);
     }
 
-    protected function cleanupTask(Task $task)
+    protected function cleanupTask(Task $task) : void
     {
         $this->taskRepository->cleanUp($task);
     }
 
-    protected function resetTask(Task $task)
+    protected function resetTask(Task $task) : void
     {
         $this->taskRepository->reset($task);
     }

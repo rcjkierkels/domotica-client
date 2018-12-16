@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Log;
 use App\Repositories\ClientRepository;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
 
 class UpdateClient extends Command
 {
@@ -64,7 +65,7 @@ class UpdateClient extends Command
                 break;
             case 'diverged':
             case 'need-to-push':
-            Log::error('Update', 'Checking', 'Impossible to update due to local changes or conflicts');
+                Log::error('Update', 'Checking', 'Impossible to update due to local changes or conflicts');
                 break;
             default:
                 Log::error('Update', 'Checking', 'Unknown GIT status. Updating failed!');
@@ -90,5 +91,7 @@ class UpdateClient extends Command
             'last_commit' => $this->getCurrentCommit(),
             'last_update_code' => date('Y-m-d H:i:s')
         ]);
+
+        Artisan::call('cache:clear');
     }
 }
