@@ -2,8 +2,8 @@
 
 namespace App\Repositories;
 
-use App\Models\Client;
 use App\Models\Event;
+use App\Notifications\EventCreated;
 
 class EventRepository
 {
@@ -25,8 +25,7 @@ class EventRepository
         $event->event = $name;
         $event->data = json_encode($data);
         $event->save();
+        $event->notify(new EventCreated());
     }
-
-
 
 }
