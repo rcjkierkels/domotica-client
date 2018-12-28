@@ -26,4 +26,9 @@ class Event extends Model
         return $subscribers->pluck('device_uuid');
     }
 
+    public function getDataAttribute($data)
+    {
+        return json_decode($data);
+    }
+
 }

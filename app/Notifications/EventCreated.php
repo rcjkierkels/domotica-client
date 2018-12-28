@@ -2,6 +2,8 @@
 
 namespace App\Notifications;
 
+use App\Models\Event;
+use App\Repositories\NotificationRepository;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use NotificationChannels\OneSignal\OneSignalChannel;
@@ -12,14 +14,17 @@ class EventCreated extends Notification
 {
     use Queueable;
 
+    /** @var Event */
+    private $event;
+
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Event $event)
     {
-        //
+        $this->event = $event;
     }
 
     /**
@@ -35,16 +40,13 @@ class EventCreated extends Notification
 
     public function toOneSignal($notifiable)
     {
+        /** @var NotificationRepository $notificationRepository */
+        $notificationRepository = app()->make(NotificationRepository::class);
+        $notificationData = $notificationRepository->getNotificationDataFromEvent($this->event);
+
         return OneSignalMessage::create()
-            ->subject("Your {$notifiable->service} account was approved!")
-            ->body("Click here to see details.")
-            ->url('http://onesignal.com')
-            ->webButton(
-                OneSignalWebButton::create('link-1')
-                    ->text('Click here')
-                    ->icon('https://upload.wikimedia.org/wikipedia/commons/4/4f/Laravel_logo.png')
-                    ->url('http://laravel.com')
-            );
+            ->subject($notificationData->title)
+            ->body($notificationData->description);
     }
 
     /**

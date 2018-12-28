@@ -25,7 +25,7 @@ class EventRepository
         $event->event = $name;
         $event->data = json_encode($data);
         $event->save();
-        $event->notify(new EventCreated());
+        $event->notify(new EventCreated($event));
     }
 
 }

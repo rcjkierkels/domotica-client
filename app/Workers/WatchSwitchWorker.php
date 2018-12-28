@@ -38,7 +38,7 @@ class WatchSwitchWorker extends BaseWorker
 
             $this->data->lastSwitchStatus = $value;
 
-            $this->eventRepository->triggerEvent('SWITCH', ['status' => (int) $this->data->lastSwitchStatus]);
+            $this->eventRepository->triggerEvent('SWITCH', ['state' => (int) $this->data->lastSwitchStatus]);
 
             $this->persistData();
         }
