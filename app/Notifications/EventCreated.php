@@ -8,7 +8,6 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use NotificationChannels\OneSignal\OneSignalChannel;
 use NotificationChannels\OneSignal\OneSignalMessage;
-use NotificationChannels\OneSignal\OneSignalWebButton;
 
 class EventCreated extends Notification
 {
@@ -46,7 +45,8 @@ class EventCreated extends Notification
 
         return OneSignalMessage::create()
             ->subject($notificationData->title)
-            ->body($notificationData->description);
+            ->body($notificationData->description)
+            ->setData('event', $this->event->toJson());
     }
 
     /**
