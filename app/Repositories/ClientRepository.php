@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Client;
+use App\Models\Log;
 use Carbon\Carbon;
 
 class ClientRepository
@@ -50,7 +51,10 @@ class ClientRepository
 
         $networkInterface = "ip route show default | awk '/default/ {print $5}'";
         $getIpAddress = 'ifconfig '."$($networkInterface)".'| sed -En \'s/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p\'';
+
         exec($getIpAddress, $result);
+
+        Log::info('Notify', 'GetIpAddress', "NetworkInterface: {$networkInterface} --- ". var_export($result, true));
 
         if (!empty($result)) {
             return current($result);

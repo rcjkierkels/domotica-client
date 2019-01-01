@@ -83,9 +83,14 @@ class UpdateClient extends Command
 
     protected function update()
     {
+        // Clean up local changes
+        exec('git checkout .');
+        exec('git clean -fd');
+
+        // Pull new version
         exec('git pull origin master');
 
-        exec('composer install');
+        exec('composer install  --no-interaction');
 
         $this->clientRepository->insertOrUpdateClient([
             'last_commit' => $this->getCurrentCommit(),
