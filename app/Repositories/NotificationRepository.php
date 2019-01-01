@@ -12,7 +12,7 @@ class NotificationRepository
     public function getNotificationDataFromEvent(Event $event) : ?stdClass
     {
         $notification = Notification::where('client_id', $event->client_id)
-            ->where('event', $event->event)
+            ->where('task_id', $event->task_id)
             ->where('state', $event->data->state)
             ->first();
 

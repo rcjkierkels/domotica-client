@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Event;
+use App\Models\Task;
 use App\Notifications\EventCreated;
 
 class EventRepository
@@ -18,11 +19,11 @@ class EventRepository
         $this->client = $this->clientRepository->getClient();
     }
 
-    public function triggerEvent(string $name, $data)
+    public function triggerEvent(Task $task, $data)
     {
         $event = new Event();
         $event->client_id = $this->client->id;
-        $event->event = $name;
+        $event->task_id = $task->id;
         $event->data = json_encode($data);
         $event->save();
         $event->notify(new EventCreated($event));

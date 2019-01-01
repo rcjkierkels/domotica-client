@@ -54,8 +54,6 @@ class ClientRepository
 
         exec($getIpAddress, $result);
 
-        Log::info('Notify', 'GetIpAddress', "NetworkInterface: {$networkInterface} --- ". var_export($result, true));
-
         if (!empty($result)) {
             return current($result);
         }
