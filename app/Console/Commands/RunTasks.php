@@ -46,9 +46,6 @@ class RunTasks extends Command
         $this->taskRepository = $taskRepository;
         $this->clientRepository = $clientRepository;
 
-        $event = \App\Models\Event::find(3);
-        $event->notify(new \App\Notifications\EventCreated($event));exit;
-
         parent::__construct();
     }
 
