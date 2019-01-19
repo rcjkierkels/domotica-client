@@ -71,6 +71,8 @@ class ClientRepository
             return current($result);
         }
 
+
+
         return 'unknown';
     }
 

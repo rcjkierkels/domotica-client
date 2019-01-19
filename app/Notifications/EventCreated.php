@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\Event;
+use App\Models\Log;
 use App\Repositories\NotificationRepository;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
@@ -42,6 +43,11 @@ class EventCreated extends Notification
         /** @var NotificationRepository $notificationRepository */
         $notificationRepository = app()->make(NotificationRepository::class);
         $notificationData = $notificationRepository->getNotificationDataFromEvent($this->event);
+
+        if (empty($notificationData)) {
+            Log::info('EventCreated', 'Notification', 'Notification not send because no notification set');
+            return;
+        }
 
         return OneSignalMessage::create()
             ->subject($notificationData->title)

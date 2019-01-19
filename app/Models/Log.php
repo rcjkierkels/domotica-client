@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Repositories\ClientRepository;
+use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Illuminate\Database\Eloquent\Model;
 
 class Log extends Model
@@ -35,7 +36,7 @@ class Log extends Model
     public static function error($sSystem, $sEvent, $sMessage, \Exception $oException = null) {
 
         if (!empty($oException)) {
-            //$sMessage += '\n\nFile:'.$oException->getFile().'\nLine:'.$oException->getLine();
+            Bugsnag::notifyException($oException);
         }
 
         self::add(self::TYPE_ERROR, $sSystem, $sEvent, $sMessage);
