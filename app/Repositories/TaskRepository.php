@@ -23,6 +23,7 @@ class TaskRepository
     {
         return Task::where('client_id', $this->client->id)
             ->where('running', 0)
+            ->where('error', 0)
             ->orderBy('created_at', 'asc')
             ->get();
     }
@@ -55,6 +56,13 @@ class TaskRepository
     public function setRunning(Task $task, bool $isRunning = true)
     {
         $task->running = $isRunning;
+        $task->save();
+    }
+
+    public function setError(Task $task, bool $error, ?int $errorLogId = null)
+    {
+        $task->error = $error;
+        $task->error_log_id = $errorLogId;
         $task->save();
     }
 

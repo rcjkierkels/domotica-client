@@ -15,34 +15,38 @@ class Log extends Model
 
     protected $table = 'log';
 
-    public static function info($sSystem, $sEvent, $sMessage) {
+    public static function info($sSystem, $sEvent, $sMessage) : int
+    {
 
-        self::add(self::TYPE_INFO, $sSystem, $sEvent, $sMessage);
-
-    }
-
-    public static function debug($sSystem, $sEvent, $sMessage) {
-
-        self::add(self::TYPE_DEBUG, $sSystem, $sEvent, $sMessage);
+        return self::add(self::TYPE_INFO, $sSystem, $sEvent, $sMessage);
 
     }
 
-    public static function alert($sSystem, $sEvent, $sMessage) {
+    public static function debug($sSystem, $sEvent, $sMessage) : int
+    {
 
-        self::add(self::TYPE_WARNING, $sSystem, $sEvent, $sMessage);
+        return self::add(self::TYPE_DEBUG, $sSystem, $sEvent, $sMessage);
 
     }
 
-    public static function error($sSystem, $sEvent, $sMessage, \Exception $oException = null) {
+    public static function alert($sSystem, $sEvent, $sMessage) : int
+    {
+
+        return self::add(self::TYPE_WARNING, $sSystem, $sEvent, $sMessage);
+
+    }
+
+    public static function error($sSystem, $sEvent, $sMessage, \Exception $oException = null) : int
+    {
 
         if (!empty($oException)) {
             Bugsnag::notifyException($oException);
         }
 
-        self::add(self::TYPE_ERROR, $sSystem, $sEvent, $sMessage);
+        return self::add(self::TYPE_ERROR, $sSystem, $sEvent, $sMessage);
     }
 
-    private static function add($sType, $sSystem, $sEvent, $sMessage)
+    private static function add($sType, $sSystem, $sEvent, $sMessage) : int
     {
         /** @var ClientRepository $clientRepository */
         $clientRepository = app()->make(ClientRepository::class);
@@ -61,5 +65,6 @@ class Log extends Model
 
         $oLog->save();
 
+        return $oLog->id;
     }
 }

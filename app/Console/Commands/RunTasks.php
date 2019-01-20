@@ -127,8 +127,10 @@ class RunTasks extends Command
 
     protected function errorTask(Task $task, Throwable $exception) : void
     {
-        Log::error('Tasks', 'Execute', $exception->getMessage(), $exception);
-        $this->cleanupTask($task);
+        $errorLogId = Log::error('Tasks', 'Execute', $exception->getMessage(), $exception);
+
+        $this->taskRepository->setError($task, true, $errorLogId);
+        $this->resetTask($task);
     }
 
     protected function cleanupTask(Task $task) : void
