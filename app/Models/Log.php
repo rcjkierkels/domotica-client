@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Repositories\ClientRepository;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Illuminate\Database\Eloquent\Model;
+use Throwable;
 
 class Log extends Model
 {
@@ -36,7 +37,7 @@ class Log extends Model
 
     }
 
-    public static function error($sSystem, $sEvent, $sMessage, \Exception $oException = null) : int
+    public static function error($sSystem, $sEvent, $sMessage, Throwable $oException = null) : int
     {
 
         if (!empty($oException)) {
