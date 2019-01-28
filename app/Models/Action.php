@@ -41,7 +41,7 @@ class Action extends Model
 
     public function subscribers()
     {
-        $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class);
     }
 
     public function evaluate(Event $event) : bool
