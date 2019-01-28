@@ -43,7 +43,7 @@ class ActionExecution extends Notification
             return;
         }
 
-        $message = OneSignalMessage::create()
+        return OneSignalMessage::create()
             ->subject($this->action->data->title)
             ->body($this->action->data->description)
             ->setData('action', $this->action->toJson());
