@@ -2,19 +2,22 @@
 
 namespace App\Repositories;
 
+use App\Models\Action;
 use App\Models\Event;
 use App\Models\Task;
-use App\Notifications\EventCreated;
+use App\Notifications\ActionExecution;
 
 class EventRepository
 {
     protected $clientRepository;
+    protected $actionRepository;
 
     /** @var \App\Models\Client client */
     protected $client;
 
-    public function __construct(ClientRepository $clientRepository)
+    public function __construct(ClientRepository $clientRepository, ActionRepository $actionRepository)
     {
+        $this->actionRepository = $actionRepository;
         $this->clientRepository = $clientRepository;
         $this->client = $this->clientRepository->getClient();
     }
@@ -26,7 +29,14 @@ class EventRepository
         $event->task_id = $task->id;
         $event->data = json_encode($data);
         $event->save();
-        $event->notify(new EventCreated($event));
+
+        $evaluatedNotificationActions = $this->actionRepository->getSpecificActionsForEvent($event, Action::NotifiableTypes);
+
+        /** @var Action $action */
+        foreach($evaluatedNotificationActions as $action)
+        {
+            $action->notify(new ActionExecution($action));
+        }
     }
 
 }

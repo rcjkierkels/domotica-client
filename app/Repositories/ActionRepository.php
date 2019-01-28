@@ -10,10 +10,10 @@ use Illuminate\Support\Collection;
 class ActionRepository
 {
 
-    public function getSpecificActionsForEvent(Event $event, string $actionType) : ?Collection
+    public function getSpecificActionsForEvent(Event $event, array $actionType) : ?Collection
     {
         $actions = Action::where('task_id', $event->task_id)
-            ->where('type', $actionType)
+            ->whereIn('type', $actionType)
             ->get();
 
         $evaluatedActions = $actions->filter(function ($action) use ($event) {
