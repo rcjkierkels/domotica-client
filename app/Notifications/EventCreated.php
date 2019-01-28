@@ -2,9 +2,11 @@
 
 namespace App\Notifications;
 
+use App\Enums\ActionType;
+use App\Models\Action;
 use App\Models\Event;
 use App\Models\Log;
-use App\Repositories\NotificationRepository;
+use App\Repositories\ActionRepository;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use NotificationChannels\OneSignal\OneSignalChannel;
@@ -40,18 +42,28 @@ class EventCreated extends Notification
 
     public function toOneSignal($notifiable)
     {
-        /** @var NotificationRepository $notificationRepository */
-        $notificationRepository = app()->make(NotificationRepository::class);
-        $notificationData = $notificationRepository->getNotificationDataFromEvent($this->event);
+        // todo: different approach. This implementation only supports push actions, not actions in general
 
-        if (empty($notificationData)) {
+        /** @var ActionRepository $actionRepository */
+        $actionRepository = app()->make(ActionRepository::class);
+        $evaluatedPushActions = $actionRepository->getSpecificActionsForEvent($this->event, ActionType::PUSH);
+
+        if ($evaluatedPushActions === null) {
             Log::info('EventCreated', 'Notification', 'Notification not send because no notification set');
             return;
         }
 
+        // todo: support multiple push messages for single event
+        if ($evaluatedPushActions->count() > 1) {
+            Log::alert('EventCreated', 'Notification', 'Multiple push messages detected and ignored. Only one push message send');
+        }
+
+        /** @var Action $action */
+        $action = $evaluatedPushActions->first();
+
         return OneSignalMessage::create()
-            ->subject($notificationData->title)
-            ->body($notificationData->description)
+            ->subject($action->data->title)
+            ->body($action->data->description)
             ->setData('event', $this->event->toJson());
     }
 

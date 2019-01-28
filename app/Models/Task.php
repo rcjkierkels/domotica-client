@@ -13,4 +13,14 @@ class Task extends Model
 
     public $timestamps = true;
 
+    public function jobs()
+    {
+        return $this->belongsToMany(Job::class);
+    }
+
+    public function actions()
+    {
+        return $this->hasMany(Action::class);
+    }
+
 }
