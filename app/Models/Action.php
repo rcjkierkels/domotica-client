@@ -59,7 +59,7 @@ class Action extends Model
 
     public function routeNotificationForOneSignal()
     {
-        return $this->subscribers()->pluck('device_uuid');
+        return $this->subscribers()->get()->pluck('device_uuid');
     }
 
 }
