@@ -7,6 +7,7 @@ use App\Models\Action;
 use App\Models\Event;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\DB;
 use NotificationChannels\OneSignal\OneSignalChannel;
 use NotificationChannels\OneSignal\OneSignalMessage;
 
@@ -61,12 +62,13 @@ class ActionExecution extends Notification
         }
 
         $data = [];
-        $jobs = $this->action->task()->jobs()->get();
+
+        $jobs = DB::table('job_task')->where('task_id', $this->action->task_id)->get();
 
         foreach( $jobs  as $job )
         {
             $data[] = [
-                'job_id' => $job->id,
+                'job_id' => $job->job_id,
                 'state' => $state
             ];
         }
