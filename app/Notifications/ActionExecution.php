@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use App\Enums\ActionType;
 use App\Models\Action;
+use App\Models\Event;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use NotificationChannels\OneSignal\OneSignalChannel;
@@ -52,8 +53,11 @@ class ActionExecution extends Notification
     protected function collectPushData()
     {
         $state = -1;
-        if ($this->action->task()->events()->count()) {
-            $state = $this->action->task()->events()->orderby('id', 'desc')->first()->data->state;
+
+        $lastEvent = Event::where('task_id', $this->action->task_id)->orderby('id', 'desc')->first();
+
+        if (!empty($lastEvent)) {
+            $state = $lastEvent->data->state;
         }
 
         $data = [];
