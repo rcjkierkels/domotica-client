@@ -46,7 +46,28 @@ class ActionExecution extends Notification
         return OneSignalMessage::create()
             ->subject($this->action->data->title)
             ->body($this->action->data->description)
-            ->setData('action', $this->action->toJson());
+            ->setData('jobs', json_encode($this->collectPushData()));
+    }
+
+    protected function collectPushData()
+    {
+        $state = -1;
+        if ($this->action->task()->events()->count()) {
+            $state = $this->action->task()->events()->orderby('id', 'desc')->first()->data->state;
+        }
+
+        $data = [];
+        $jobs = $this->action->task()->jobs()->get();
+
+        foreach( $jobs  as $job )
+        {
+            $data[] = [
+                'job_id' => $job->id,
+                'state' => $state
+            ];
+        }
+
+        return $data;
     }
 
     /**

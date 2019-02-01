@@ -23,4 +23,9 @@ class Task extends Model
         return $this->hasMany(Action::class);
     }
 
+    public function events()
+    {
+        return $this->hasMany(Event::class);
+    }
+
 }
