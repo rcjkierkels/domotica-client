@@ -22,8 +22,9 @@ class CameraWorker extends BaseWorker
     public function run()
     {
         $photo = $this->cameraService->takePhoto();
+        $state = (int) !empty($photo);
 
-        $this->eventRepository->triggerEvent($this->task, ['state' => 1, 'photo' => $photo]);
+        $this->eventRepository->triggerEvent($this->task, ['state' => $state, 'photo' => $photo]);
     }
 
 }
