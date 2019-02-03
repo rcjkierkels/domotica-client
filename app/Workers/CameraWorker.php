@@ -1,0 +1,38 @@
+<?php
+
+namespace App\Workers;
+
+use App\Repositories\EventRepository;
+
+class CameraWorker extends BaseWorker
+{
+    /** @var EventRepository $eventRepository */
+    protected $eventRepository;
+
+    public function configure()
+    {
+        $this->eventRepository = app()->make(EventRepository::class);
+    }
+
+    public function run()
+    {
+
+
+        /*
+        if (!isset($this->data->lastSwitchStatus) || $this->data->lastSwitchStatus !== $value) {
+            if ($value === false) {
+                Log::info('SWITCH', 'closed', 'Switch is closed');
+            } else {
+                Log::info('SWITCH', 'open', 'Switch is open');
+            }
+
+            $this->data->lastSwitchStatus = $value;
+
+            $this->eventRepository->triggerEvent($this->task, ['state' => (int) $this->data->lastSwitchStatus]);
+
+            $this->persistData();
+        }
+        */
+    }
+
+}
