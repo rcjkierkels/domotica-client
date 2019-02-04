@@ -7,7 +7,6 @@ use App\Models\Log;
 use App\Models\Task;
 use App\Repositories\ClientRepository;
 use App\Repositories\TaskRepository;
-use App\Services\CameraService;
 use Illuminate\Console\Command;
 use Spatie\Async\Pool;
 use Throwable;
@@ -57,10 +56,6 @@ class RunTasks extends Command
      */
     public function handle() : void
     {
-        $test = new CameraService();
-        $output = $test->takePhoto();
-        echo strlen($output);exit;
-
         $this->resetDeadTasks();
 
         $pool = Pool::create()
