@@ -46,7 +46,7 @@ class EventRepository
         }
     }
 
-    public function addAttachments(Event $event, EventAttachment $eventAttachments)
+    public function addAttachments(Event $event, EventAttachmentCollection $eventAttachments)
     {
         foreach($eventAttachments as $attachment)
         {
