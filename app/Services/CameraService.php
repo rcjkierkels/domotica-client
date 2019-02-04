@@ -16,7 +16,7 @@ class CameraService
 
     public function takePhoto() : string
     {
-        $tmpfile = tempnam(storage_path());
+        $tmpfile = tempnam(storage_path(), 'raspistill-');
 
         $camera = new Raspistill();
         $camera->timeout(1)
