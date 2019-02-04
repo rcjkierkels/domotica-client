@@ -17,4 +17,9 @@ class Event extends Model
         return json_decode($data);
     }
 
+    public function attachments()
+    {
+        return $this->hasMany(Attachment::class);
+    }
+
 }

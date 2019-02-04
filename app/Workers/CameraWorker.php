@@ -2,6 +2,8 @@
 
 namespace App\Workers;
 
+use App\Collections\EventAttachmentCollection;
+use App\Objects\EventAttachment;
 use App\Repositories\EventRepository;
 use App\Services\CameraService;
 
@@ -13,10 +15,14 @@ class CameraWorker extends BaseWorker
     /** @var CameraService */
     protected $cameraService;
 
+    /** @var EventAttachmentCollection */
+    protected $eventAttachmentCollection;
+
     public function configure()
     {
         $this->cameraService = app()->make(CameraService::class);
         $this->eventRepository = app()->make(EventRepository::class);
+        $this->eventAttachmentCollection = app()->make(EventAttachmentCollection::class);
     }
 
     public function run()
@@ -24,7 +30,15 @@ class CameraWorker extends BaseWorker
         $photo = $this->cameraService->takePhoto();
         $state = (int) !empty($photo);
 
-        $this->eventRepository->triggerEvent($this->task, ['state' => $state, 'photo' => $photo]);
+        if (!empty($photo)) {
+            $eventAttachment = new EventAttachment();
+            $eventAttachment->data = $photo;
+            $eventAttachment->mime_type = 'image/jpeg';
+
+            $this->eventAttachmentCollection->push($eventAttachment);
+        }
+
+        $this->eventRepository->triggerEvent($this->task, ['state' => $state], $this->eventAttachmentCollection);
     }
 
 }
