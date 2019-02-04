@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Log;
+use Cvuorinen\Raspicam\Raspistill;
 
 class CameraService
 {
@@ -15,15 +16,22 @@ class CameraService
 
     public function takePhoto() : string
     {
+        $tmpfile = tempnam(storage_path());
 
-        $output = shell_exec($this->CAMERA_APP . "-q 100 -o -");
+        $camera = new Raspistill();
+        $camera->timeout(1)
+            ->rotate(90)
+            ->quality(90)
+            ->takePicture($tmpfile);
 
-        if (empty($output)) {
+        $photo = file_get_contents($tmpfile);
+
+        if (empty($photo)) {
             Log::error('CameraService', 'takePhoto', "Cannot take photo");
             return null;
         }
 
-        return $output;
+        return $photo;
     }
 
 
