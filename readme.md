@@ -1,3 +1,7 @@
+[![HitCount](http://hits.dwyl.io/rcjkierkels/domotica-client.svg)](http://hits.dwyl.io/rcjkierkels/domotica-client)
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/dwyl/esta/issues)
+[![Known Vulnerabilities](https://snyk.io/test/github/rcjkierkels/domotica-client/badge.svg?targetFile=package.json)](https://snyk.io/test/github/rcjkierkels/domotica-client?targetFile=package.json)
+
 # About Domotica Client
 The domotica client is designed to run on a Raspberry Pi, Arduino or any other lightweight micro computer configured with an Apache webserver. The domotica client works together with the [domotica server](https://github.com/rcjkierkels/domotica-server) and the [domotica app](https://github.com/rcjkierkels/domotica-app). If configured correctly the domotica client will report itself to the server directly after is goes only. It also updates itself whenever new releases are pushed to the master branch. The client is designed in such way that it restarts itself when it hangs or has stopped working.
 
