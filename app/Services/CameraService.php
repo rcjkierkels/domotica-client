@@ -16,7 +16,7 @@ class CameraService
 
         $camera = new Raspistill();
         $camera->timeout(1)
-            ->rotate(90)
+            ->rotate(180) /** Todo: should be a setting per client */
             ->quality(100)
             ->takePicture($tmpfile);
 
